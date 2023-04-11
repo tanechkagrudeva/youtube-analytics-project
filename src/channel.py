@@ -21,9 +21,33 @@ class Channel:
         self.title = self.channel_info['items'][0]['snippet']['title']
         self.description = self.channel_info['items'][0]['snippet']['description']
         self.url = self.channel_info['items'][0]['snippet']['thumbnails']['default']['url']
-        self.subscriberCount = self.channel_info['items'][0]['statistics']['subscriberCount']
+        self.subscriberCount = int(self.channel_info['items'][0]['statistics']['subscriberCount'])
         self.video_count = self.channel_info['items'][0]['statistics']['videoCount']
         self.viewCount = self.channel_info['items'][0]['statistics']['viewCount']
+
+    def __str__(self):
+        return f'"{self.title}, ({self.url})"'
+
+    def __add__(self, other):
+        return self.subscriberCount + other.subscriberCount
+
+    def __sub__(self, other):
+        return self.subscriberCount - other.subscriberCount
+
+    def __gt__(self, other):
+        return self.subscriberCount > other.subscriberCount
+
+    def __ge__(self, other):
+        return self.subscriberCount >= other.subscriberCount
+
+    def __lt__(self, other):
+        return self.subscriberCount < other.subscriberCount
+
+    def __le__(self, other):
+        return self.subscriberCount <= other.subscriberCount
+
+    def __eq__(self, other):
+        return self.subscriberCount == other.subscriberCount
 
 
     def print_info(self) -> None:
