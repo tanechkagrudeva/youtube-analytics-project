@@ -1,5 +1,4 @@
 import datetime
-from datetime import timedelta
 import isodate
 import os
 from dotenv import load_dotenv
@@ -22,7 +21,7 @@ class PlayList:
                                                        ).execute()
         self.title: str = self.playlist_info['items'][0]['snippet']['title']
         self.url = "https://www.youtube.com/playlist?list=" + playlist_id
-        self.video_answer = PlayList.youtube.videos().list(part='contentDetails,statistics',
+        self.video_response = PlayList.youtube.videos().list(part='contentDetails,statistics',
                                                    id=','.join(self.playlist_id)
                                                    ).execute()
 
@@ -31,12 +30,12 @@ class PlayList:
         """возвращает объект класса `datetime.timedelta`
         с суммарной длительность плейлиста (обращение как к свойству, использовать `@property`"""
 
-        total_duration= datetime.timedelta(seconds=0)
+        total_duration = datetime.timedelta(seconds=0)
 
-        for duration in self.video_answer['items']:
-            iso_8601_duration = duration['contentDetails']['duration']
-            duration = isodate.parse_duration(iso_8601_duration)
-            total_duration += duration
+        for dis_video in self.video_response['items']:
+            iso_8601_duration = dis_video['contentDetails']['duration']
+            duration_video = isodate.parse_duration(iso_8601_duration)
+            total_duration += duration_video
 
         return total_duration
 
@@ -48,5 +47,5 @@ class PlayList:
             like_count: int = video['statistics']['likeCount']
             if popular_like < like_count:
                 popular_like = like_count
-                url =  "https://youtube.be/" + video['id']
+                url = "https://youtu.be/" + video['id']
         return url
