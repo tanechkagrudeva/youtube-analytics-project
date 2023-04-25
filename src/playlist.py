@@ -15,11 +15,11 @@ class PlayList:
     def __init__(self, playlist_id: str) -> None:
         self.playlist_id = playlist_id
 
-        self.playlist_info = PlayList.youtube.playlistItems().list(playlistId=playlist_id,
+        self.playlist = PlayList.youtube.playlistItems().list(playlistId=playlist_id,
                                                        part='contentDetails, snippet',
                                                        maxResults=50,
                                                        ).execute()
-        self.title: str = self.playlist_info['items'][0]['snippet']['title']
+        self.title: str = self.playlist['items'][0]['snippet']['title']
         self.url = "https://www.youtube.com/playlist?list=" + playlist_id
         self.video_response = PlayList.youtube.videos().list(part='contentDetails,statistics',
                                                    id=','.join(self.playlist_id)
@@ -32,20 +32,25 @@ class PlayList:
 
         total_duration = datetime.timedelta(seconds=0)
 
-        for dis_video in self.video_response['items']:
-            iso_8601_duration = dis_video['contentDetails']['duration']
-            duration_video = isodate.parse_duration(iso_8601_duration)
-            total_duration += duration_video
+        for video in self.video_response['items']:
+            iso_8601_duration = video['contentDetails']['duration']
+            duration = isodate.parse_duration(iso_8601_duration)
+            total_duration += duration
 
         return total_duration
+
+    def __str__(self):
+        return f'"{self.total_duration}"'
 
     def show_best_video(self):
         """возвращает ссылку на самое популярное видео из плейлиста (по количеству лайков)"""
         popular_like = 0
         url = None
-        for video in self.video_answer['items']:
-            like_count: int = video['statistics']['likeCount']
+        for video in self.video_response['items']:
+            like_count = int(video['statistics']['likeCount'])
             if popular_like < like_count:
                 popular_like = like_count
                 url = "https://youtu.be/" + video['id']
         return url
+
+
